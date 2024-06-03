@@ -40,6 +40,8 @@ using (var writerrcmp = new AssetsFileWriter(strcmp))
 The file goes from 173MB to 124MB. This code does not check whether the folder in which we are decompressing the AssetBundle exists, you can add that in later if you would like to do so.
 
 ### Extra Notes
+The original files (from the developers) were compressed using LZ4. We compressed them with LZMA.
+
 Analyzing the decompressed file with GameFileScanner (scanning for ZLib with Dynamic Streams), I can see that there's about 2 million ZLib streams that could get the size from 16.7MB to 48.6MB. This might look against our goals of compression but this will in turn help it compress better. On compressing the file with xtool(zlib+reflate)+srep+lolz, the file goes to 56.2MB and takes 7 seconds to unpack. The file hashes are exactly the same.
 
 If you try to compress the "recompressed" file, let us first analyze the file. It still has about 400000 ZLib streams that would get the size from 3.22MB to 6.79MB. Compression could prove to be helpful but let us see. Unfortunately as I expected, lolz is unable to get any more compression out of this (to be fair it is compressed with LZMA already) and the final file size comes out to be slightly bigger than the original file (lmao) - 124MB + spare change.
